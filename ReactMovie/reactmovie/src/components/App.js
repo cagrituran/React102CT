@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import MovieList from './MovieList'
+import {MovieList} from './MovieList'
 import SearchBar from './SearchBar'
 
 export default class App extends Component {
@@ -49,15 +49,41 @@ export default class App extends Component {
           overview:
             "When a mafia accountant is taken hostage on his beat, a police officer – wracked by guilt from a prior stint as a negotiator – must negotiate the standoff, even as his own family is held captive by the mob.",
         },
-      ],}
+      ],
+    search:"",}
+  deleteMovie = (movie)=>{
+    const newMovieList = this.state.movies.filter(m=>m.id!==movie.id);
+    //Eğer elimizde hiç film kaydi yoksa bu pattern yeni kayitlari ekliyor
+    // this.setState({
+    //   movies:newMovieList,
+
+    // })
+    //Var olan  statein durumunu guncelliyoruz
+    this.setState((state)=>({
+      movies:newMovieList,
+    }));
+  }
+  searchMovie=(event)=>{
+    console.log(event.target.value)
+    this.setState({search:event.target.value})
+  }
   render() {
+    let filteredMovies = this.state.movies.filter((movie)=>{
+      return(
+        movie.name.toLowerCase().indexOf(this.state.search.toLowerCase())!==-1
+      )
+    })
     return (
       <div className='container'>
-          <div className='row'>
+          <div className='row my-3'>
               <div className='col-md-12'>
-                  <SearchBar/>
+                  <SearchBar searchMovieProp = {this.searchMovie}/>
               </div>
-              <MovieList movies={this.state.movies}/>
+              <MovieList
+               //movies={this.state.movies}
+               movies={filteredMovies}
+               deleteMovieProp = {this.deleteMovie}
+               />
 
           </div>
       </div>
